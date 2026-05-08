@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>airWrite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f8f6f1;
+    --paper: #f0ede6;
+    --ink: #1a1a1a;
+    --rule: #c8c3b8;
+    --accent: #1a1a1a;
+    --muted: #7a756e;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── MASTHEAD NAV ── */
+  .masthead {
+    border-bottom: 3px double var(--rule);
+    padding: 0 2rem;
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .masthead-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .masthead-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .masthead-logo {
+    font-family: var(--serif);
+    font-size: 2.6rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    text-decoration: none;
+    line-height: 1;
+    font-style: italic;
+  }
+
+  .masthead-tagline {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-bar::-webkit-scrollbar { display: none; }
+
+  .nav-bar a {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 1rem;
+    white-space: nowrap;
+    border-right: 1px solid var(--rule);
+    transition: background 0.2s;
+  }
+  .nav-bar a:first-child { padding-left: 0; }
+  .nav-bar a:last-child { border-right: none; }
+  .nav-bar a:hover { color: var(--muted); }
+
+  /* ── HERO ── */
+  .hero {
+    border-bottom: 3px double var(--rule);
+    padding: 4rem 2rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-left {
+    border-right: 1px solid var(--rule);
+    padding-right: 3rem;
+  }
+
+  .hero-kicker {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero-kicker::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--muted);
+  }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .hero-deck {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    max-width: 480px;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.8rem;
+    text-decoration: none;
+    border: 1.5px solid var(--black);
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-primary:hover { background: var(--white); color: var(--black); }
+
+  .btn-secondary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--muted);
+    padding-bottom: 2px;
+    transition: color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--black); border-color: var(--black); }
+
+  /* SVG Logo Mark */
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .logo-mark-wrap {
+    position: relative;
+  }
+
+  .logo-mark-wrap svg {
+    width: 280px;
+    height: 280px;
+  }
+
+  .app-badge-wrap {
+    text-align: center;
+  }
+
+  .app-store-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: var(--black);
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+    margin-bottom: 0.6rem;
+  }
+  .app-store-btn:hover { opacity: 0.8; }
+
+  .app-store-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  .app-store-text { text-align: left; }
+  .app-store-text small { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.05em; opacity: 0.7; text-transform: uppercase; }
+  .app-store-text strong { display: block; font-family: var(--sans); font-weight: 500; font-size: 14px; }
+
+  .app-tagline {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.4rem 0;
+    margin-bottom: 0;
+  }
+
+  /* ── SCREENSHOTS ── */
+  .screenshots-section {
+    padding: 3rem 2rem;
+    border-bottom: 3px double var(--rule);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .screenshot-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screenshot-frame {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    aspect-ratio: 9/18;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screenshot-inner {
+    width: 85%;
+    height: 85%;
+    background: var(--black);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+
+  .screenshot-inner svg { opacity: 0.6; }
+
+  .preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+
+  .screenshot-caption {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.7rem;
+    text-align: center;
+  }
+
+  
+
+  .scr-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── WHO WE ARE ── */
+  .who-section {
+    padding: 3rem 2rem;
+    border-bottom: 3px double var(--rule);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .who-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    margin-top: 2rem;
+    align-items: start;
+  }
+
+  .who-left {
+    border-right: none;
+    padding-right: 0;
+    max-width: 680px;
+  }
+
+  .who-pull {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.2;
+    color: var(--black);
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--black);
+    padding-left: 1.2rem;
+  }
+
+  .who-body {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  .who-body p + p { margin-top: 1rem; }
+
+  .who-right {}
+
+  .who-stat {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .who-stat:first-child { border-top: 1px solid var(--rule); }
+
+  .who-stat-num {
+    font-family: var(--serif);
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--black);
+    line-height: 1;
+  }
+
+  .who-stat-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    padding: 3rem 2rem;
+    border-bottom: 3px double var(--rule);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: 2rem;
+  }
+
+  .contact-col {
+    padding: 1.5rem 2rem;
+    border-right: 1px solid var(--rule);
+  }
+  .contact-col:first-child { padding-left: 0; }
+  .contact-col:last-child { border-right: none; }
+
+  .contact-col-head {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .contact-col-title {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--black);
+  }
+
+  .contact-col p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .contact-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+  .contact-link:hover { border-color: var(--black); }
+
+  /* ── POLICIES ── */
+  .policies-section {
+    padding: 3rem 2rem;
+    border-bottom: 3px double var(--rule);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .policies-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 2rem;
+  }
+
+  .policy-card {
+    border: 1px solid var(--rule);
+    padding: 2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    margin-left: -1px;
+    margin-top: -1px;
+  }
+  .policy-card:hover { background: var(--paper); }
+
+  .policy-num {
+    font-family: var(--serif);
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--rule);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .policy-title {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+  }
+
+  .policy-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .policy-arrow {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    font-size: 1.2rem;
+    color: var(--rule);
+    transition: color 0.2s, transform 0.2s;
+  }
+  .policy-card:hover .policy-arrow { color: var(--black); transform: translate(3px, -3px); }
+
+  /* ── POLICY PAGES ── */
+  .policy-pages {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .policy-page {
+    display: none;
+    padding: 3rem 2rem;
+    border-bottom: 3px double var(--rule);
+  }
+  .policy-page.active { display: block; }
+
+  .policy-page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .policy-page-title {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--black);
+  }
+
+  .policy-close {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid var(--rule);
+    transition: color 0.2s;
+  }
+  .policy-close:hover { color: var(--black); border-color: var(--black); }
+
+  .policy-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .policy-content h3 {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--black);
+    margin: 1.5rem 0 0.5rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.3rem;
+  }
+
+  .policy-content p, .policy-content li {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+  }
+
+  .policy-content ul {
+    padding-left: 1.2rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    color: var(--white);
+    padding: 3rem 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    margin-bottom: 2rem;
+  }
+
+  .footer-brand {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+  }
+
+  .footer-tagline {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.7;
+  }
+
+  .footer-col-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-links a {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .footer-company {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    text-align: right;
+    line-height: 1.7;
+  }
+
+  /* ── DIVIDER RULE ── */
+  .rule-thin { height: 1px; background: var(--rule); margin: 0; }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-headline { animation: fadeUp 0.8s ease both; }
+  .hero-deck { animation: fadeUp 0.8s 0.15s ease both; }
+  .hero-cta-group { animation: fadeUp 0.8s 0.25s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .bilingual-grid { grid-template-columns: 1fr !important; }
+    .bilingual-grid > div:first-child { border-right: none !important; border-bottom: 1px solid var(--rule); }
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-left { border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: 2rem; }
+    .hero-right { flex-direction: row; justify-content: center; }
+    .screenshots-grid { grid-template-columns: repeat(2, 1fr); }
+    .who-grid { grid-template-columns: 1fr; }
+    .who-left { border-right: none; padding-right: 0; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .contact-col { border-right: none; border-bottom: 1px solid var(--rule); padding-left: 0; }
+    .policies-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ MASTHEAD ═══════════════════════════ -->
+<header class="masthead">
+  <div class="masthead-top" style="max-width:1200px; margin:0 auto;">
+    <span class="masthead-date" id="masthead-date"></span>
+    <a href="#" class="masthead-logo">airWrite</a>
+    <span class="masthead-tagline">A map of where you were.<br>A trace of what you felt there.</span>
+  </div>
+  <nav class="nav-bar" style="max-width:1200px; margin:0 auto;">
+    <a href="#hero">airWrite</a>
+    <a href="#who">Who We Are</a>
+    <a href="#contact">Contact Us</a>
+    <a href="#policies">Policies</a>
+    <a href="#appstore" style="margin-left:auto; border-right:none;">↓ App Store</a>
+  </nav>
+</header>
+
+<!-- ═══════════════════════════ SCREENSHOTS ═══════════════════════════ -->
+<section id="screenshots" class="screenshots-section">
+  <div class="section-label">App Preview — Four Views</div>
+  
+
+<div class="screenshots-grid">
+
+  <div class="screenshot-card">
+    <div class="screenshot-frame">
+      <img src="images/tteokbokki.png" alt="Gwangjang Market preview" class="preview-image">
+    </div>
+    <p class="screenshot-caption">Gwangjang Market, Seoul</p>
+  </div>
+
+  <div class="screenshot-card">
+    <div class="screenshot-frame">
+      <img src="images/bukchon.png" alt="Bukchon preview" class="preview-image">
+    </div>
+    <p class="screenshot-caption">Bukchon, Seoul</p>
+  </div>
+
+  <div class="screenshot-card">
+    <div class="screenshot-frame">
+      <img src="images/safari.png" alt="Safari preview" class="preview-image">
+    </div>
+    <p class="screenshot-caption">Safari, Uganda</p>
+  </div>
+
+  <div class="screenshot-card">
+    <div class="screenshot-frame">
+      <img src="images/camino.png" alt="Camino preview" class="preview-image">
+    </div>
+    <p class="screenshot-caption">Camino, Spain</p>
+  </div>
+
+</div>
+
+</section>
+
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<section id="hero" class="hero">
+  <div class="hero-left">
+    <p class="hero-kicker">airWrite</p>
+    <h1 class="hero-headline">Write<br><em>in the air,</em><br>Let places<br>remember<br>for you.</h1>
+    
+<p class="hero-deck">
+A passing thought, a brief feeling, or something that arrived only because you happened to be there just then.<br><br>
+Not important enough for an essay, perhaps, but too particular to lose.<br><br>
+Where do you usually leave it?<br>
+In a diary? A notebook? X, Instagram, perhaps Facebook?<br>
+Or does it disappear before you decide where it belongs?
+</p>
+
+    <div class="hero-cta-group">
+      <a href="#appstore" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+        Download on App Store
+      </a>
+      <a href="#screenshots" class="btn-secondary">See how it works →</a>
+    </div>
+  </div>
+
+  <div class="hero-right" id="appstore">
+    
+<!-- App Icon -->
+    <div class="logo-mark-wrap">
+      <img src="images/appicon.png" alt="airWrite App Icon" style="width:280px; height:280px; border-radius:28%; object-fit:cover; display:block;">
+    </div>
+
+    <div class="app-badge-wrap">
+
+      
+<a href="https://apps.apple.com/kr/app/airwrite-%EC%97%90%EC%96%B4%EB%A1%9C%EC%9D%B4%ED%8A%B8/id6450790322" target="_blank" rel="noopener">
+  <img src="images/AppStoreDownloadBadge-Black.svg" alt="Download on the App Store" style="height:58px; width:auto; display:block;">
+</a>
+
+      
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<!-- ═══════════════════════════ WHO WE ARE ═══════════════════════════ -->
+<section id="who" class="who-section">
+  <div class="section-label">Who We Are</div>
+  
+<div class="who-grid" style="grid-template-columns: 1.1fr 0.9fr; align-items:center; gap:4rem;">
+  <div class="who-left" style="max-width:none;">
+    <blockquote class="who-pull">봉숭아</blockquote>
+
+    <div class="who-body">
+      <p>여름 끝자락에 봉숭아꽃을 손톱에 물들이고, 첫눈이 오기를 우리는 얼마나 기다렸던가요.</p>
+
+      <p>붉게 물든 작은 손톱 끝에서 흘러가던 하루하루가 얼마나 소중했던지요.</p>
+
+      <p>그래서 우리는 봉숭아가 되기로 했습니다. 당신이 당신의 하루를, 당신의 인생을 더 사랑할 이유가 되고 싶습니다. 그래서 우리는 오늘도 실재하는 삶을 사랑할 수많은 이유를 하나씩 만들어 가고 있답니다.</p>
+    </div>
+  </div>
+
+  <div class="who-right" style="display:flex; justify-content:center; align-items:center;">
+    <img src="images/bon-soung-aa.PNG" alt="봉숭아 로고" style="max-width:100%; width:420px; height:auto; display:block; object-fit:contain;">
+  </div>
+</div>
+</section>
+
+
+<!-- ═══════════════════════════ CONTACT ═══════════════════════════ -->
+<section id="contact" class="contact-section">
+  <div class="section-label">Contact Us</div>
+  <div style="padding: 2rem 0;">
+    <a href="mailto:hello@bon-soung-aa.com" class="contact-link">hello@bon-soung-aa.com</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ POLICIES ═══════════════════════════ -->
+<section id="policies" class="policies-section">
+  <div class="section-label">Policies</div>
+  <div class="policies-grid">
+    <div class="policy-card" onclick="openPolicy('terms')">
+<h3 class="policy-title">이용약관</h3>
+      <p class="policy-desc">서비스 이용에 관한 권리와 의무, 이용 제한 사항을 안내합니다.</p>
+      <span class="policy-arrow">↗</span>
+    </div>
+    <div class="policy-card" onclick="openPolicy('privacy')">
+<h3 class="policy-title">개인정보처리방침</h3>
+      <p class="policy-desc">수집하는 개인정보의 종류와 처리 방식, 보호 조치를 설명합니다.</p>
+      <span class="policy-arrow">↗</span>
+    </div>
+    <div class="policy-card" onclick="openPolicy('refund')">
+<h3 class="policy-title">환불 및 구독 해지 정책</h3>
+      <p class="policy-desc">구독 해지 방법, 환불 절차, 청약철회 기준에 대해 안내합니다.</p>
+      <span class="policy-arrow">↗</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ POLICY PAGES ═══════════════════════════ -->
+<div class="policy-pages">
+  <!-- 이용약관 -->
+  <div id="policy-terms" class="policy-page">
+    <div class="policy-page-header">
+      <h2 class="policy-page-title">Terms of Use<br><span style="font-size:1.4rem; font-weight:400; font-style:italic; color:var(--muted);">이용약관</span></h2>
+      <button class="policy-close" onclick="closePolicy()">← 닫기 / Close</button>
+    </div>
+
+    <!-- Column headers -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; margin-bottom:0;">
+      <div style="background:var(--ink); color:var(--white); padding:0.5rem 1.2rem; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;">English</div>
+      <div style="background:var(--muted); color:var(--white); padding:0.5rem 1.2rem; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; border-left:1px solid rgba(255,255,255,0.2);">한국어</div>
+    </div>
+
+    <!-- Preamble -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;"><strong style="color:var(--ink);">Last updated: February 2, 2026</strong></p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;">These Terms of Use ("Terms") govern your access to and use of airWrite ("Platform"). Please read these Terms carefully before using the Platform. By accessing or using airWrite, you agree to be bound by these Terms.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;">THESE TERMS OF USE CONSTITUTE A LEGAL AGREEMENT BETWEEN YOU AND AIRWRITERS INC. THEY GOVERN YOUR USE OF THE AIRWRITE APPLICATION AND THE PRODUCTS AND SERVICES PROVIDED THROUGH IT.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">To agree to these Terms, tap <em>"Sign in with Apple"</em> or <em>"Continue with Apple"</em>. If you do not agree, do not use the airWrite application.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;"><strong style="color:var(--ink);">마지막 업데이트: 2026년 2월 2일</strong></p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;">본 이용약관(이하 "약관")은 귀하의 airWrite(이하 "플랫폼") 액세스 및 사용에 적용됩니다. 플랫폼을 사용하기 전에 본 약관을 주의 깊게 읽어주시기 바랍니다. airWrite에 액세스하거나 사용함으로써 귀하는 본 약관을 준수하는 데 동의하는 것으로 간주됩니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;">본 약관은 귀하와 주식회사 airWriters Inc.(이하 "airWriters") 간의 법적 계약을 구성하며, 귀하의 airWrite 애플리케이션 및 이를 통해 제공되는 제품 및 서비스의 사용을 규율합니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">본 이용약관에 동의하려면 <em>"Apple로 로그인"</em> 또는 <em>"Apple로 계속하기"</em>를 탭하십시오. 동의하지 않는 경우 airWrite 애플리케이션을 사용하지 마십시오.</p>
+      </div>
+    </div>
+
+    <!-- Article 1 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 01</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Acceptance of Terms</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">By accessing or signing the Platform, you acknowledge that you have read, understood, and agree to be bound by these Terms and the Privacy Policy.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제1조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">약관의 수락</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">플랫폼에 액세스하거나 서명함으로써 귀하는 본 약관 및 개인정보 처리방침을 읽고 이해했으며, 이에 동의함을 인정합니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 2 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 02</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Eligibility</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>(1) You must be at least 14 years old to use the Platform. Users under 14 may use the Service with parental or guardian consent.</li>
+          <li>(2) airWrite is available only to iPhone users with an Apple account and is subject to Apple's Subscription Rules regarding minors.</li>
+          <li>(3) If you use the Platform on behalf of an entity, you represent that you have authority to bind that entity.</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제2조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">이용 자격</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>(1) 본 플랫폼을 이용하려면 만 14세 이상이어야 합니다. 만 14세 미만인 경우, 부모 또는 법정 보호자의 동의를 얻어 서비스를 이용할 수 있습니다.</li>
+          <li>(2) airWrite는 Apple 계정이 있는 iPhone 사용자만 이용할 수 있으며, 미성년자의 개인정보 보호를 위한 Apple의 구독 규정이 적용됩니다.</li>
+          <li>(3) 귀하가 법인을 대신하여 플랫폼을 이용하는 경우, 귀하는 해당 법인을 본 약관에 따라 구속할 권한이 있음을 보증합니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Article 3 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 03</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">User Content</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>(1) You are solely responsible for any content you post or share ("User Content").</li>
+          <li>(2) You retain ownership of User Content but grant us a non-exclusive, worldwide, royalty-free license to use it on the Platform.</li>
+          <li>(3) User Content must not violate third-party rights including copyright, trademark, or privacy rights.</li>
+          <li>(4) We may remove or disable User Content without prior notice if it violates these Terms or applicable law.</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제3조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">사용자 콘텐츠</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>(1) 귀하는 플랫폼에 게시, 업로드 또는 공유하는 모든 콘텐츠("사용자 콘텐츠")에 대해 전적으로 책임을 집니다.</li>
+          <li>(2) 귀하는 사용자 콘텐츠의 소유권을 보유하되, 플랫폼 운영을 위하여 비독점적·전 세계적·로열티 없는 라이선스를 당사에 부여합니다.</li>
+          <li>(3) 사용자 콘텐츠는 제3자의 저작권, 상표권, 개인정보 보호권, 퍼블리시티권 등을 침해해서는 안 됩니다.</li>
+          <li>(4) 당사는 약관 또는 법령을 위반하거나 부적절한 사용자 콘텐츠를 사전 통지 없이 삭제하거나 비활성화할 수 있습니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Article 4 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 04</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Prohibited Conduct</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">You agree not to use the Platform for unlawful, harmful, or offensive purposes. Prohibited conduct includes, but is not limited to:</p>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>Harassment, bullying, or threats</li>
+          <li>Impersonation of others or entities</li>
+          <li>Unauthorized commercial or promotional content</li>
+          <li>Distribution of malware or viruses</li>
+          <li>Interference with Platform functionality</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제4조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">금지된 행위</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">귀하는 불법적·유해하거나 본 약관을 위반하는 방식으로 플랫폼을 사용하지 않습니다. 금지 행위에는 다음이 포함되며 이에 한정되지 않습니다:</p>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>괴롭힘, 따돌림, 협박</li>
+          <li>타인 또는 단체 사칭</li>
+          <li>승인되지 않은 상업·판촉 콘텐츠 게시</li>
+          <li>바이러스·멀웨어 전송</li>
+          <li>플랫폼 기능 방해 행위</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Article 5 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 05</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Intellectual Property</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">All intellectual property rights in the Platform are owned by us or our licensors. You agree not to infringe upon these rights.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제5조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">지적 재산권</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">플랫폼의 모든 지적 재산권은 당사 또는 라이선스 제공자에게 귀속됩니다. 귀하는 이를 무단으로 사용하거나 침해해서는 안 됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 6 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 06</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Third-Party Services</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">The Platform may link to third-party services. We are not responsible for their content or practices. Access is at your own risk.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제6조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">제3자 서비스</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">플랫폼에는 제3자 웹사이트 링크가 포함될 수 있으며, 당사는 해당 서비스의 내용이나 정책에 대해 책임지지 않습니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 7 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 07</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Paid Services and Subscriptions</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>(1) Certain features may require paid subscriptions.</li>
+          <li>(2) Payments are processed via Apple App Store In-App Purchases.</li>
+          <li>(3) Subscriptions renew automatically unless cancelled.</li>
+          <li>(4) Refunds and cancellations follow the Refund and Subscription Policy.</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제7조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">유료 서비스 및 구독</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>(1) 일부 기능은 유료 구독으로 제공될 수 있습니다.</li>
+          <li>(2) 결제는 Apple App Store 인앱 결제를 통해 처리됩니다.</li>
+          <li>(3) 구독은 해지하지 않는 한 자동 갱신됩니다.</li>
+          <li>(4) 환불 및 해지는 별도의 환불 및 구독 해지 정책에 따릅니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Article 8 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 08</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Disclaimer of Warranties</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">The Platform is provided "as is" and "as available". We disclaim all express or implied warranties including accuracy, completeness, or fitness for a particular purpose.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제8조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">보증의 부인</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">플랫폼은 "있는 그대로" 제공되며, 정확성·완전성·특정 목적 적합성에 대한 명시적·묵시적 보증을 하지 않습니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 9 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 09</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Limitation of Liability</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">To the maximum extent permitted by law, we are not liable for indirect or consequential damages.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제9조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">책임의 제한</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">법이 허용하는 범위 내에서, 당사는 간접적·부수적·결과적 손해에 대해 책임지지 않습니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 10 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 10</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Modification of Terms</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">We may modify these Terms at any time. Continued use constitutes acceptance.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제10조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">약관의 변경</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">당사는 사전 통지 없이 약관을 변경할 수 있으며, 변경 후 사용은 동의로 간주됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 11 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 11</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Termination</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">We may terminate or suspend access at any time without notice.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제11조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">해지</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">당사는 언제든지 귀하의 플랫폼 이용을 종료하거나 중단할 수 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 12 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 12</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Governing Law and Jurisdiction</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">These Terms are governed by the laws of the Republic of Korea. All disputes are subject to the exclusive jurisdiction of Korean courts. The English version of these Terms shall be the authoritative version.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제12조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">준거법 및 관할</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">본 약관은 대한민국 법을 따르며, 모든 분쟁은 회사 소재지 관할 법원에 따릅니다. 본 약관의 영문본을 정본으로 합니다.</p>
+      </div>
+    </div>
+
+    <!-- Article 13 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Article 13</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Retention Period</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">When using Sign in with Apple, we may retain non-identifiable user information solely to prevent re-registration of suspended users, for up to three (3) years after account deletion. Such information does not include name, email address, or other personal data.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제13조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">정보 보유 기간</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">Sign in with Apple을 통해 생성된 계정의 경우, 개인 식별이 불가능한 사용자 식별 정보에 한하여 부정 이용자의 재가입 방지를 목적으로 탈퇴 후 최대 3년간 보유할 수 있습니다. 해당 정보에는 성명, 이메일 등 개인정보는 포함되지 않습니다.</p>
+      </div>
+    </div>
+
+    <!-- Footer note -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none; background:var(--ink);">
+      <div style="padding:0.8rem 1.2rem;">
+        <p style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.05em;">Last updated: February 2, 2026</p>
+      </div>
+      <div style="padding:0.8rem 1.2rem; border-left:1px solid rgba(255,255,255,0.1);">
+        <p style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.05em;">마지막 업데이트: 2026년 2월 2일</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 개인정보처리방침 -->
+  <div id="policy-privacy" class="policy-page">
+    <div class="policy-page-header">
+      <h2 class="policy-page-title">Privacy Policy<br><span style="font-size:1.4rem; font-weight:400; font-style:italic; color:var(--muted);">개인정보처리방침</span></h2>
+      <button class="policy-close" onclick="closePolicy()">← 닫기 / Close</button>
+    </div>
+
+    <!-- Intro -->
+    <div style="border-bottom: 1px solid var(--rule); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+      <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;"><strong style="color:var(--ink);">Last updated on June 27th, 2023</strong></p>
+      <p style="font-size:0.9rem; color:var(--muted); line-height:1.8; margin-bottom:1rem;">Welcome to airWrite! This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our application or any other services offered by airWrite (collectively, the "Services").</p>
+      <p style="font-size:0.9rem; color:var(--muted); line-height:1.8; margin-bottom:1rem;">To respect and protect your privacy, airWrite does not collect any privacy-related information other than the minimum necessary to operate the app, i.e., email account, pen name, posts, and post-related activity utilizing Apple account to sign up. It is our privacy policy to minimize the collection of personal information.</p>
+      <p style="font-size:0.9rem; color:var(--muted); line-height:1.8; margin-bottom:1.5rem;">Please read this Privacy Policy carefully. By accessing or using our Services, you acknowledge that you have read, understood, and agree to be bound by the terms of this Privacy Policy. If you do not agree with the terms of this Privacy Policy, please note that there may be limitations on your ability to use our services.</p>
+      <hr style="border:none; border-top:1px solid var(--rule); margin: 1rem 0;">
+      <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.8rem;"><strong style="color:var(--ink);">마지막 업데이트 2023년 6월 27일</strong></p>
+      <p style="font-size:0.9rem; color:var(--muted); line-height:1.8; margin-bottom:1rem;">airWrite에 오신 것을 환영합니다. 본 개인정보 보호정책은 귀하가 당사의 애플리케이션 또는 airWrite가 제공하는 기타 서비스(총칭하여 이하 "서비스")를 사용할 때 당사가 귀하의 개인 정보를 수집, 사용, 공개 및 보호하는 방법을 설명합니다.</p>
+      <p style="font-size:0.9rem; color:var(--muted); line-height:1.8; margin-bottom:1rem;">귀하의 개인정보를 존중하고 보호하기 위해 airWrite는 앱 운영에 필요한 최소한의 정보(이메일 계정, 필명, 게시물 및 가입 시 Apple 계정을 활용한 게시물 관련 활동) 외에는 어떠한 개인정보 관련 정보도 수집하지 않습니다. 개인정보 수집을 최소화하는 것이 당사의 개인정보 보호를 위한 처리방침입니다.</p>
+      <p style="font-size:0.9rem; color:var(--muted); line-height:1.8;">본 개인정보 처리방침을 주의 깊게 읽어주시기 바랍니다. 당사의 서비스에 액세스하거나 서비스를 이용함으로써 귀하는 본 개인정보 처리방침의 약관을 읽고 이해했으며 이에 동의함을 인정하는 것으로 간주됩니다. 본 개인정보 처리방침의 약관에 동의하지 않는 경우, 당사의 서비스 이용에 제한이 있을 수 있음을 유의하시기 바랍니다.</p>
+    </div>
+
+    <!-- Column headers -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; margin-bottom:0;">
+      <div style="background:var(--ink); color:var(--white); padding:0.5rem 1.2rem; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;">English</div>
+      <div style="background:var(--muted); color:var(--white); padding:0.5rem 1.2rem; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; border-left:1px solid rgba(255,255,255,0.2);">한국어</div>
+    </div>
+
+    <!-- Section by section side-by-side -->
+
+    <!-- Intro -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">Welcome to airWrite! This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our application or any other services offered by airWrite (collectively, the "Services").</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-top:0.8rem;">To respect and protect your privacy, airWrite does not collect any privacy-related information other than the minimum necessary to operate the app. It is our privacy policy to minimize the collection of personal information.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-top:0.8rem;">Please read this Privacy Policy carefully. By accessing or using our Services, you acknowledge that you have read, understood, and agree to be bound by the terms of this Privacy Policy.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">airWrite에 오신 것을 환영합니다. 본 개인정보 보호정책은 귀하가 당사의 애플리케이션 또는 airWrite가 제공하는 기타 서비스(이하 "서비스")를 사용할 때 당사가 귀하의 개인 정보를 수집, 사용, 공개 및 보호하는 방법을 설명합니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-top:0.8rem;">귀하의 개인정보를 존중하고 보호하기 위해 airWrite는 앱 운영에 필요한 최소한의 정보 외에는 어떠한 개인정보도 수집하지 않습니다. 개인정보 수집을 최소화하는 것이 당사의 처리방침입니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-top:0.8rem;">본 개인정보 처리방침을 주의 깊게 읽어주시기 바랍니다. 서비스를 이용함으로써 귀하는 본 방침의 약관을 읽고 이해했으며 이에 동의함을 인정하는 것으로 간주됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 01</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">1. Information We Collect</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">We may collect personal information that you voluntarily provide when you register for an account, use the Services, or communicate with us:</p>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. Sign up via 'Apple ID' only — we collect your registered or Apple-issued fictitious email address.</li>
+          <li>b. Profile information such as your PenName (username).</li>
+          <li>c. Content you submit or post, including writing, rearranged ⍺rtickers, and comments.</li>
+          <li>d. Area information within a 3km radius of where you made the post.</li>
+        </ul>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-top:0.6rem;">If we wish to collect additional information, we will notify you via an updated Privacy Policy.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">조항 01</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">1. 당사가 수집하는 정보</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">당사는 귀하가 계정을 등록하거나 서비스를 이용하거나 당사와 소통할 때 자발적으로 제공하는 개인정보를 수집할 수 있습니다:</p>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. 가입은 'Apple ID로 가입'으로만 이루어지며, 등록된 이메일 또는 Apple이 발급한 가상 주소를 수집합니다.</li>
+          <li>b. 필명(사용자 이름)과 같은 프로필 정보.</li>
+          <li>c. 서비스에 제출하거나 게시하는 콘텐츠(글, ⍺rticker, 댓글 포함).</li>
+          <li>d. 게시물 작성 위치로부터 반경 3Km를 포함하는 지역 정보.</li>
+        </ul>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-top:0.6rem;">추가 정보를 수집하고자 하는 경우 업데이트된 처리방침을 통해 동의를 구할 것입니다.</p>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 02</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">2. Use of Information</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. Providing and maintaining our Services.</li>
+          <li>b. Responding to your comments, questions, and requests.</li>
+          <li>c. Sending technical notices, updates, and security alerts.</li>
+          <li>d. Analyzing usage trends and preferences to enhance our Services.</li>
+          <li>e. Detecting and preventing fraudulent or unauthorized activities.</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">조항 02</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">2. 정보의 사용</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. 당사의 서비스 제공 및 유지.</li>
+          <li>b. 귀하의 의견, 질문 및 요청에 대한 응답.</li>
+          <li>c. 기술 고지, 업데이트 및 보안 경고 전송.</li>
+          <li>d. 서비스 개선을 위한 사용 동향 및 선호도 분석.</li>
+          <li>e. 사기 또는 무단 활동 감지 및 방지.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 03</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">3. Sharing of Information</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. To comply with legal obligations, such as responding to lawful requests and legal processes.</li>
+          <li>b. In connection with a merger, acquisition, or sale of assets, where personal information may be transferred.</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">조항 03</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">3. 정보 공유</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. 적법한 요청 및 법적 절차에 대응하는 등 법적 의무를 준수하기 위해.</li>
+          <li>b. 당사 자산의 합병, 인수 또는 매각과 관련하여 개인 정보가 이전되는 경우.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 04</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">4. Privacy for Copyright</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">Copyright in works created through airWrite is jointly owned by airWrite and the author (user), and the user is deemed to have agreed to joint copyright by signing up for airWrite.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">In the case of written posts, the user's copyright is limited to the text only. The image of the post as a whole is the unique and exclusive copyright of airWrite.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">In the case of NoteCovers, the user's copyright is limited to the unique arrangement of elements. The image as a whole is the unique and exclusive copyright of airWrite.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">You may not exploit, resell, or subcontract posts and note covers for commercial use, nor use them to create derivative works other than for personal use.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">airWrite may create and commercially use derivative works without additional consent from the co-author. If you do not agree, you may not sign up for airWrite. You are responsible for any actions inconsistent with these copyright rules.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">조항 04</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">4. 저작권에 대한 개인 정보 보호</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">airWrite를 통해 창작된 저작물의 저작권은 airWrite와 저작자(이용자)가 공동으로 소유하며, 이용자는 가입함으로써 공동저작권에 동의한 것으로 간주됩니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">작성된 글의 경우, 이용자 저작권의 범위는 해당 텍스트에 한정하며, 그래픽으로 구현된 게시물 전체 이미지는 airWrite의 고유하고 배타적인 저작권 대상입니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">노트커버의 경우, 이용자 저작권의 범위는 구성 요소의 고유한 배열 방식에 한정하며, 그래픽으로 구현된 전체 이미지는 airWrite의 고유하고 배타적인 저작권 대상입니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">이용자는 게시물 및 노트커버를 상업적 용도로 활용·재판매·위탁할 수 없으며, 개인적 용도 이외의 2차 저작물 제작에 사용할 수 없습니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">당사는 공동저작권자의 추가 동의 없이 2차 저작물을 제작하고 상업적으로 사용할 수 있습니다. 이에 동의하지 않을 경우 가입할 수 없습니다. 본 규정에 반하는 이용자의 행위에 대한 책임은 이용자 본인에게 있습니다.</p>
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 05</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">5. Children's Privacy</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">If you are under the age of 14, you may use the Services with the consent of a parent or guardian. airWrite is available only to iPhone users with Apple account, and therefore is subject to Apple's Subscription Rules for the privacy of minors.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">조항 05</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">5. 아동의 개인정보</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">만 14세 미만인 경우 부모 또는 보호자의 동의가 있어야 서비스를 이용할 수 있습니다. airWrite는 Apple 계정이 있는 아이폰 사용자만 이용할 수 있으며, 미성년자 개인정보 보호에 관한 Apple의 가입 규정이 적용됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Section 6 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 06</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">6. Changes to This Privacy Policy</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">We may update our Privacy Policy from time to time. Any changes will be notified in the application with the revised date. We encourage you to review this Privacy Policy periodically for any updates or changes.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">조항 06</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">6. 본 개인정보 처리방침의 변경</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">당사는 수시로 개인정보 처리방침을 업데이트할 수 있습니다. 변경 사항이 있을 경우 애플리케이션에 알림이 표시되며 개정된 날짜가 표시됩니다. 본 처리방침을 주기적으로 검토하여 변경 사항을 확인하시기 바랍니다.</p>
+      </div>
+    </div>
+
+    <!-- Section 7 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 07</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">7. Contact Us</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">If you have any questions, concerns, or suggestions regarding our Privacy Policy, please contact us at <a href="mailto:hello@bon-soung-aa.com" class="contact-link">hello@bon-soung-aa.com</a></p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">By using our Services, you consent to the terms of this Privacy Policy and agree to be bound by it.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">조항 07</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">7. 당사에 문의하기</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">당사의 개인정보 처리방침과 관련하여 질문, 우려 사항 또는 제안 사항이 있는 경우, <a href="mailto:hello@bon-soung-aa.com" class="contact-link">hello@bon-soung-aa.com</a> 으로 문의하시기 바랍니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">당사의 서비스를 이용함으로써 귀하는 본 개인정보 처리방침의 약관에 동의하고 이를 준수하는 데 동의하게 됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Footer note -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none; background:var(--ink);">
+      <div style="padding:0.8rem 1.2rem;">
+        <p style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.05em;">Last updated: June 27, 2023</p>
+      </div>
+      <div style="padding:0.8rem 1.2rem; border-left:1px solid rgba(255,255,255,0.1);">
+        <p style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.05em;">마지막 업데이트: 2023년 6월 27일</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 환불정책 -->
+  <div id="policy-refund" class="policy-page">
+    <div class="policy-page-header">
+      <h2 class="policy-page-title">Refund and Subscription Policy<br><span style="font-size:1.4rem; font-weight:400; font-style:italic; color:var(--muted);">환불 및 구독 해지 정책</span></h2>
+      <button class="policy-close" onclick="closePolicy()">← 닫기 / Close</button>
+    </div>
+
+    <!-- Column headers -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; margin-bottom:0;">
+      <div style="background:var(--ink); color:var(--white); padding:0.5rem 1.2rem; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase;">English</div>
+      <div style="background:var(--muted); color:var(--white); padding:0.5rem 1.2rem; font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; border-left:1px solid rgba(255,255,255,0.2);">한국어</div>
+    </div>
+
+    <!-- Preamble -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">This Refund and Subscription Policy governs refunds and subscription cancellations for the airWrite service and forms an integral part of the airWrite Terms of Service.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">본 정책은 주식회사 airWriters Inc.가 제공하는 airWrite 서비스의 유료 구독과 관련된 환불 및 해지 기준을 규정하며, airWrite 이용약관의 일부를 구성합니다.</p>
+      </div>
+    </div>
+
+    <!-- Payment Method -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 01</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Payment Method</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">airWrite is a subscription-based digital service provided through the Apple App Store. All payments are processed exclusively via Apple Inc.'s In-App Purchase system.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제1조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">결제 수단</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">본 서비스는 Apple App Store를 통해 제공되는 구독형 디지털 서비스입니다. 모든 결제는 Apple Inc.가 제공하는 App Store In-App Purchase 시스템을 통해 처리됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Refunds -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 02</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Refunds</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. Refunds for purchases made through the App Store are subject to Apple's refund policies.</li>
+          <li>b. airWriters does not have the authority to issue refunds for App Store transactions. All refund requests must be submitted directly to Apple through its customer support channels.</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제2조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">환불 정책</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. App Store를 통해 이루어진 결제에 대한 환불은 Apple의 환불 정책에 따라 처리됩니다.</li>
+          <li>b. 회사는 App Store 결제 내역에 대해 직접적인 환불 권한을 보유하고 있지 않으며, 환불 요청은 Apple App Store 고객 지원 채널을 통해 접수하셔야 합니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Subscription Cancellation -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 03</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Subscription Cancellation</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. Users may manage or cancel their subscriptions at any time through their Apple ID account settings.</li>
+          <li>b. Cancellation takes effect at the end of the current billing period. Access to subscription features will remain available until the end of the paid term.</li>
+        </ul>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제3조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">구독 해지</h3>
+        <ul style="font-size:0.85rem; color:var(--muted); line-height:1.8; padding-left:1.1rem;">
+          <li>a. 구독은 이용자가 Apple ID 계정 설정을 통해 언제든지 직접 해지할 수 있습니다.</li>
+          <li>b. 구독 해지는 현재 구독 기간이 종료된 이후부터 적용되며, 이미 결제된 구독 기간 동안에는 서비스를 계속 이용하실 수 있습니다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right of Withdrawal -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 04</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Right of Withdrawal</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">This service constitutes digital content and a subscription-based service under applicable consumer protection laws.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">Once the service has commenced, the statutory right of withdrawal may be restricted, except where withdrawal is required by law, including in cases of material defects in the service.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제4조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">청약철회 제한</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:0.6rem;">본 서비스는 「전자상거래 등에서의 소비자보호에 관한 법률」 제17조 제2항에 따른 디지털 콘텐츠 및 구독형 서비스에 해당합니다.</p>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">서비스 이용이 개시된 이후에는 원칙적으로 청약철회가 제한될 수 있으며, 다만 서비스에 중대한 하자가 있는 경우 등 관련 법령에 따라 청약철회가 인정되는 경우에는 예외로 합니다.</p>
+      </div>
+    </div>
+
+    <!-- Changes to Policy -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none;">
+      <div style="padding:1.5rem 1.2rem; border-right:1px solid var(--rule);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">Section 05</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">Changes to This Policy</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">This Policy may be updated from time to time to reflect changes in applicable laws or Apple policies. Any material changes will be made available through the Platform or our website.</p>
+      </div>
+      <div style="padding:1.5rem 1.2rem; background:var(--paper);">
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem;">제5조</p>
+        <h3 style="font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--black); margin-bottom:0.8rem; border:none; padding:0;">정책의 변경</h3>
+        <p style="font-size:0.85rem; color:var(--muted); line-height:1.8;">본 환불 및 구독 해지 정책은 관련 법령 또는 Apple 정책 변경에 따라 수정될 수 있으며, 변경 사항은 플랫폼 또는 홈페이지를 통해 고지됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Footer note -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--rule); border-top:none; background:var(--ink);">
+      <div style="padding:0.8rem 1.2rem;">
+        <p style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.05em;">Refund and Subscription Policy · airWriters Inc.</p>
+      </div>
+      <div style="padding:0.8rem 1.2rem; border-left:1px solid rgba(255,255,255,0.1);">
+        <p style="font-family:var(--mono); font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.05em;">환불 및 구독 해지 정책 · 주식회사 airWriters Inc.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">airWrite</div>
+        <p class="footer-tagline">Write in the air,<br>Let places remember for you.<br><br>© 2025 bon-soung-aa Inc.<br>All rights reserved.</p>
+      </div>
+      <div>
+        <p class="footer-col-title">Product</p>
+        <ul class="footer-links">
+          <li><a href="#hero">airWrite App</a></li>
+          <li><a href="#screenshots">Features</a></li>
+          <li><a href="#appstore">App Store</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <ul class="footer-links">
+          <li><a href="#who">Who We Are</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#policies">Policies</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Legal</p>
+        <ul class="footer-links">
+          <li><a href="#" onclick="openPolicy('terms')">이용약관</a></li>
+          <li><a href="#" onclick="openPolicy('privacy')">개인정보처리방침</a></li>
+          <li><a href="#" onclick="openPolicy('refund')">환불정책</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 bon-soung-aa Inc. All rights reserved.</span>
+      <div class="footer-company">
+        주식회사 봉숭아 | 대표: 박규희 박재선 | 사업자등록번호: 288-88-02663<br>
+        bon-soung-aa Inc. | CEO: GyuHee Bac &amp; JaeSun Bac | Business ID No. 288-88-02663<br>
+        대한민국 경기도 광주시 남한산성로 548-12 A동 201호<br>
+        201, Unit A, Namhansansung-ro 548-12, Gwangju-si, Gyeonggi-do, Republic of Korea
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Masthead date
+  const d = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('masthead-date').textContent =
+    days[d.getDay()] + ', ' + months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+
+  // Policy accordion
+  function openPolicy(id) {
+    document.querySelectorAll('.policy-page').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById('policy-' + id);
+    if (el) {
+      el.classList.add('active');
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function closePolicy() {
+    document.querySelectorAll('.policy-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('policies').scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
